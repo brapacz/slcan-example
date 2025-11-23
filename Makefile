@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 VENV := venv
-SLCAN_DEV ?= /dev/ttyACM0
+SLCAN_DEV ?= /dev/serial/by-path/pci-0000:00:14.0-usb-0:2.1.1:1.0
 SLCAN_BIN := /bin/slcand
 
 .PHONY: default
@@ -21,5 +21,9 @@ can0: $(SLCAN_BIN)
 	sudo ip link set up $@;
 
 .PHONY: read
-read:
+read $(VENV):
 	$(VENV)/bin/python read_can.py
+
+.PHONY: write-sample
+write-sample: $(VENV)
+	$(VENV)/bin/python write_once_can.py

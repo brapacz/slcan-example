@@ -12,6 +12,7 @@ INTERFACE = "socketcan"
 CHANNEL = "can0"
 BITRATE = None  # not used when interface already configured
 
+
 def format_msg(msg: can.Message) -> str:
     timestamp = f"{msg.timestamp:.6f}" if msg.timestamp is not None else ""
     id_str = f"{msg.arbitration_id:#x}"
@@ -27,9 +28,10 @@ def format_msg(msg: can.Message) -> str:
     flag_str = f"[{','.join(flags)}]" if flags else ""
     return f"{timestamp} ID={id_str} DLC={dlc} {flag_str} DATA={data}"
 
+
 def main():
     try:
-        bus = can.interface.Bus(channel=CHANNEL, bustype=INTERFACE)
+        bus = can.interface.Bus(channel=CHANNEL, interface=INTERFACE)
     except Exception as e:
         print(f"Failed to open CAN interface {CHANNEL}: {e}", file=sys.stderr)
         sys.exit(1)
@@ -48,6 +50,7 @@ def main():
             bus.shutdown()
         except Exception:
             pass
+
 
 if __name__ == "__main__":
     main()
