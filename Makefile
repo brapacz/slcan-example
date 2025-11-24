@@ -5,8 +5,7 @@ SLCAN_DEV ?= /dev/serial/by-path/pci-0000:00:14.0-usb-0:2.1.1:1.0
 SLCAN_BIN := /bin/slcand
 
 .PHONY: default
-default: $(VENV)
-	@echo "This is the default target."
+default: read
 
 $(SLCAN_BIN):
 	sudo apt install can-utils
@@ -23,6 +22,10 @@ can0: $(SLCAN_BIN)
 .PHONY: read
 read $(VENV):
 	$(VENV)/bin/python read_can.py
+
+.PHONY: read-async
+read-async $(VENV):
+	$(VENV)/bin/python read_can_async.py
 
 .PHONY: write-sample
 write-sample: $(VENV)
