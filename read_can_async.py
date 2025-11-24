@@ -4,12 +4,13 @@ Async read of CAN frames from 'can0' and print to stdout.
 Requires python-can with asyncio support.
 """
 
+import os
 import sys
 import can
 import asyncio
 
 INTERFACE = "socketcan"
-CHANNEL = "can0"
+CAN_NETWORK_INTERFACE = os.getenv("CAN_NETWORK_INTERFACE", "can0")
 BITRATE = None  # not used when interface already configured
 
 
@@ -32,7 +33,7 @@ def format_msg(msg: can.Message) -> str:
 async def read_loop(bus: can.BusABC):
     reader = can.AsyncBufferedReader()
     notifier = can.Notifier(bus, [reader], loop=asyncio.get_running_loop())
-    print(f"Listening on {CHANNEL} (press Ctrl-C to exit)...")
+    print(f"Listening on {CAN_NETWORK_INTERFACE} (press Ctrl-C to exit)...")
     try:
         while True:
             msg = await reader.get_message()  # waits until a message arrives
@@ -51,9 +52,12 @@ async def read_loop(bus: can.BusABC):
 
 async def main():
     try:
-        bus = can.interface.Bus(channel=CHANNEL, interface=INTERFACE)
+        bus = can.interface.Bus(channel=CAN_NETWORK_INTERFACE, interface=INTERFACE)
     except Exception as e:
-        print(f"Failed to open CAN interface {CHANNEL}: {e}", file=sys.stderr)
+        print(
+            f"Failed to open CAN interface {CAN_NETWORK_INTERFACE}: {e}",
+            file=sys.stderr,
+        )
         return
     task = asyncio.create_task(read_loop(bus))
     try:

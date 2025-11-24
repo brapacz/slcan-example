@@ -4,12 +4,13 @@ Read CAN frames from interface 'can0' and print them to stdout.
 Requires python-can.
 """
 
+import os
 import sys
 import can
 import time
 
 INTERFACE = "socketcan"
-CHANNEL = "can0"
+CAN_NETWORK_INTERFACE = os.getenv("CAN_NETWORK_INTERFACE", "can0")
 BITRATE = None  # not used when interface already configured
 
 
@@ -31,12 +32,15 @@ def format_msg(msg: can.Message) -> str:
 
 def main():
     try:
-        bus = can.interface.Bus(channel=CHANNEL, interface=INTERFACE)
+        bus = can.interface.Bus(channel=CAN_NETWORK_INTERFACE, interface=INTERFACE)
     except Exception as e:
-        print(f"Failed to open CAN interface {CHANNEL}: {e}", file=sys.stderr)
+        print(
+            f"Failed to open CAN interface {CAN_NETWORK_INTERFACE}: {e}",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
-    print(f"Listening on {CHANNEL} (press Ctrl-C to exit)...")
+    print(f"Listening on {CAN_NETWORK_INTERFACE} (press Ctrl-C to exit)...")
     try:
         while True:
             msg = bus.recv(timeout=1.0)  # seconds

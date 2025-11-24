@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
+import os
 import can
 import time
 
 INTERFACE = "socketcan"
-CHANNEL = "can0"
+CAN_NETWORK_INTERFACE = os.getenv("CAN_NETWORK_INTERFACE", "can0")
 
 
 def send_once(arbitration_id=0x123, data=b"\xde\xad\xbe\xef", extended_id=False):
-    bus = can.interface.Bus(channel=CHANNEL, interface=INTERFACE)
+    bus = can.interface.Bus(channel=CAN_NETWORK_INTERFACE, interface=INTERFACE)
     msg = can.Message(
         arbitration_id=arbitration_id, data=data, is_extended_id=extended_id
     )
