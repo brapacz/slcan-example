@@ -34,7 +34,6 @@ read-async $(VENV) $(CAN_NETWORK_INTERFACE):
 write-sample: $(VENV) $(CAN_NETWORK_INTERFACE)
 	$(VENV)/bin/python write_once_can.py
 
-
 .PHONY: canopen-scan
 canopen-scan: $(VENV) $(CAN_NETWORK_INTERFACE)
 	$(VENV)/bin/python canopen_scan.py
